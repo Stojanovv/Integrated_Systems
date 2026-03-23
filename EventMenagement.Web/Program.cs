@@ -1,6 +1,12 @@
+using EventMenagement.Repository.Interface;
+using EventMenagement.Service;
+using EventMenagement.Service.implemetation;
+using EventMenagement.Service.implemetation.Interceptor;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using EventMenagement.Web.Data;
+using EventMenagement.Web.mapper;
+using EventsManagement.Repository.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,4 +50,24 @@ app.MapControllerRoute(
 app.MapRazorPages()
     .WithStaticAssets();
 
+//Repository -Scoped (open generic registration)
+builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
+
+//Services - Scoped
+builder.Services.AddScoped<IEventService,EventService>();
+builder.Services.AddScoped<ISeatService, SeatService>();
+
+//Mappers - Scoped
+builder.Services.AddScoped<EventMapper>();
+builder.Services.AddScoped<SeatMapper>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+
+builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+{
+    options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+    options.AddInterceptors(sp.GetRequiredService<AuditInterceptor>());
+});
 app.Run();

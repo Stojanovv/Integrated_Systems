@@ -2,5 +2,7 @@
 
 public enum TicketStatus
 {
-    
+    Issued,
+    Used,
+    Cancelled
 }

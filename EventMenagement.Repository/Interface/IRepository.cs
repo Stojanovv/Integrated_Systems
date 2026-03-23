@@ -1,9 +1,9 @@
 ﻿using EventsManagement.Domain;
 
-namespace EventMenagement.Repository;
+namespace EventMenagement.Repository.Interface;
 
 using System.Linq.Expressions;
-using EventsManagement.Domain.Common;
+using EventsManagement.Domain;
 using Microsoft.EntityFrameworkCore.Query;
 
 public interface IRepository<T> where T : BaseEntity

@@ -13,4 +13,9 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="11.0.0-preview.1.26104.118" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EventMenagement.Repository\EventMenagement.Repository.csproj" />
+      <ProjectReference Include="..\EventsManagement.Domain\EventsManagement.Domain.csproj" />
+    </ItemGroup>
 </Project>
