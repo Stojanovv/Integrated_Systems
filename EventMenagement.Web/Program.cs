@@ -7,23 +7,61 @@ using Microsoft.EntityFrameworkCore;
 using EventMenagement.Web.Data;
 using EventMenagement.Web.mapper;
 using EventsManagement.Repository.Implementation;
+using EvolveDb;
+using Microsoft.Data.Sqlite;
+using EventMenagement.Repository;
+using ApplicationDbContext = EventMenagement.Repository.ApplicationDbContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+// Connection string
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                       ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+// Register AuditInterceptor
+builder.Services.AddScoped<AuditInterceptor>();
+
+// Add DbContext
+builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+{
+    options.UseSqlite(connectionString);
+    options.UseLazyLoadingProxies();
+
+    // Inject interceptor correctly
+    var interceptor = sp.GetRequiredService<AuditInterceptor>();
+    options.AddInterceptors(interceptor);
+});
+
+// Identity
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+// Repository, Services, Mappers
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<ISeatService, SeatService>();
+builder.Services.AddScoped<EventMapper>();
+builder.Services.AddScoped<SeatMapper>();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Evolve migration
+using var cnx = new SqliteConnection(connectionString);
+cnx.Open(); // Sqlite needs connection open for Evolve
+var evolve = new Evolve(cnx, msg => Console.WriteLine(msg))
+{
+    Locations = new[] { "Database/migrations" },
+    IsEraseDisabled = true
+};
+evolve.Migrate();
+
+// HTTP pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -31,43 +69,20 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}")
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-app.MapRazorPages()
-    .WithStaticAssets();
+app.MapRazorPages().WithStaticAssets();
 
-//Repository -Scoped (open generic registration)
-builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
-
-//Services - Scoped
-builder.Services.AddScoped<IEventService,EventService>();
-builder.Services.AddScoped<ISeatService, SeatService>();
-
-//Mappers - Scoped
-builder.Services.AddScoped<EventMapper>();
-builder.Services.AddScoped<SeatMapper>();
-
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUser, CurrentUser>();
-
-builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
-{
-    options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-    options.AddInterceptors(sp.GetRequiredService<AuditInterceptor>());
-});
 app.Run();

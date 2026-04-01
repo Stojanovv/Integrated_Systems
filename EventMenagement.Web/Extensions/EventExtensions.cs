@@ -41,19 +41,6 @@ public static class EventExtensions
             UserId = request.UserId,
         };
     }
-
-    public static EventDto ToDto(this Event eventDto)
-    {
-        return new EventDto
-        {
-            Title = eventDto.Title,
-            Description = eventDto.Description,
-            StartDate = eventDto.StartDate,
-            EndDate = eventDto.EndDate,
-            Status = eventDto.Status,
-            BannerUrl = eventDto.BannerUrl,
-            VenueId = eventDto.VenueId,
-            UserId = eventDto.UserId,
-        };
-    }
+    
+    
 }

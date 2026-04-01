@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventMenagement.Service", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventMenagement.Repository", "EventMenagement.Repository\EventMenagement.Repository.csproj", "{9A0CED83-E789-44FA-92BE-A50C181D3782}"
 EndProject
+Project("{42EA0DBD-9CF1-443E-919E-BE9C484E4577}") = "Database", "Database\Database.sqlproj", "{ED2ECA8F-A56A-4B1C-96A3-FFDFBFEFA633}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{9A0CED83-E789-44FA-92BE-A50C181D3782}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A0CED83-E789-44FA-92BE-A50C181D3782}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A0CED83-E789-44FA-92BE-A50C181D3782}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED2ECA8F-A56A-4B1C-96A3-FFDFBFEFA633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED2ECA8F-A56A-4B1C-96A3-FFDFBFEFA633}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED2ECA8F-A56A-4B1C-96A3-FFDFBFEFA633}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED2ECA8F-A56A-4B1C-96A3-FFDFBFEFA633}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventMenagement.Web.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("api/seats/[controller]")]
+[Route("api/seats/[controller]")]
 [ApiController]
 public class SeatController : ControllerBase
 {

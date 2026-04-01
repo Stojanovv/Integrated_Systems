@@ -8,7 +8,7 @@ public record EventRequest(
     [Required] DateTime StartDate,
     [Required] DateTime EndDate,
     [Required] string Status,
-    string ? BanneeUrl,
+    [Required]string BanneeUrl,
     [Required] Guid UserId,
     [Required] Guid VenueId
     );

@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.3"/>
@@ -24,6 +20,12 @@
       <ProjectReference Include="..\EventMenagement.Repository\EventMenagement.Repository.csproj" />
       <ProjectReference Include="..\EventMenagement.Service\EventMenagement.Service.csproj" />
       <ProjectReference Include="..\EventsManagement.Domain\EventsManagement.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Build Include="Database\Migrations\V1__Create_Initial.SQL" />
+      <Build Include="Database\Migrations\V2__Insert_intoUSERS.sql" />
+      <Build Include="Database\Migrations\V3__Crete_Events_Table.sql" />
     </ItemGroup>
 
 </Project>
